@@ -2,13 +2,19 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, make sure you have docker installed on your system.
+
+[Docker For Windows](https://docs.docker.com/desktop/windows/install/)
+
+[Docker For Mac](https://docs.docker.com/desktop/mac/install/)
+
+Next, go ahead and boot up the project by running the following:
 
 ```bash
-npm run dev
-# or
-yarn dev
+docker-compose up --build
 ```
+
+This will boot up docker and install all dependencies for the application.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -18,6 +24,8 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+### Mongo Integration
+The node mongo integration logic is located at `middleware/database.js`. In next.js, all routes under `pages/api` are server side rendered, so there's no need for us to use something like epxress. This is where we can build out the api for the project.
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

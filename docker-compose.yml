@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: ./
+      dockerfile: docker/node/Dockerfile
+    tty: true
+    restart: always
+    volumes:
+      - ./.next:/var/www/html/.next
+      - ./node_modules:/var/www/html/node_modules
+      - ./pages:/var/www/html/pages
+      - ./public:/var/www/html/public
+      - ./styles:/var/www/html/styles
+      - ./next.config.js:/var/www/html/next.config.js
+      - ./package-lock.json:/var/www/html/package-lock.json
+      - ./package.json:/var/www/html/package.json
+    ports:
+      - 3000:3000
+  mongo:
+    image: mongo
+    restart: always
+    logging:
+      driver: none
+    volumes:
+      - ./datadir:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret 
