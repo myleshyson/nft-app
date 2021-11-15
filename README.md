@@ -11,6 +11,7 @@ First, make sure you have docker installed on your system.
 Next, go ahead and boot up the project by running the following:
 
 ```bash
+cd ./path/to/this/project
 docker-compose up --build
 ```
 
@@ -26,6 +27,11 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ### Mongo Integration
 The node mongo integration logic is located at `middleware/database.js`. In next.js, all routes under `pages/api` are server side rendered, so there's no need for us to use something like epxress. This is where we can build out the api for the project.
+
+Im using [Mongo DB Compass](https://www.mongodb.com/products/compass) for a mongo db gui. The connection string is `mongodb://root:secret@localhost:27017`. 
+
+*note:* you need to be running the project with docker in order to connect. 
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
