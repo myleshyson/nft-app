@@ -2,7 +2,7 @@
 import { MongoClient } from "mongodb"
 import nextConnect from "next-connect"
 
-const client = new MongoClient('mongodb://root:secret@mongo:27017', {
+const client = new MongoClient('mongodb://root:secret@localhost:27017', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

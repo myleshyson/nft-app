@@ -8,14 +8,15 @@ First, make sure you have docker installed on your system.
 
 [Docker For Mac](https://docs.docker.com/desktop/mac/install/)
 
-Next, go ahead and boot up the project by running the following:
+Also make sure you use use either [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) or node version `16.x.x`.
+
+Next, go ahead and build the project by running the following:
 
 ```bash
 cd ./path/to/this/project
-docker-compose up --build
+docker-compose build
+npm i && npm run dev
 ```
-
-This will boot up docker and install all dependencies for the application.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -29,8 +30,6 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 The node mongo integration logic is located at `middleware/database.js`. In next.js, all routes under `pages/api` are server side rendered, so there's no need for us to use something like epxress. This is where we can build out the api for the project.
 
 Im using [Mongo DB Compass](https://www.mongodb.com/products/compass) for a mongo db gui. The connection string is `mongodb://root:secret@localhost:27017`. 
-
-*note:* you need to be running the project with docker in order to connect. 
 
 ## Learn More
 
