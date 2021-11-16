@@ -8,8 +8,6 @@ services:
     tty: true
     restart: always
     volumes:
-      - ./.next:/var/www/html/.next
-      - ./node_modules:/var/www/html/node_modules
       - ./pages:/var/www/html/pages
       - ./public:/var/www/html/public
       - ./styles:/var/www/html/styles

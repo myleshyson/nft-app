@@ -6,8 +6,6 @@ RUN apt-get update \
 
 WORKDIR /var/www/html
 
-COPY ./.next .next
-COPY ./node_modules node_modules
 COPY ./pages pages
 COPY ./public public
 COPY ./styles styles
