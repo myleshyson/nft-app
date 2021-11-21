@@ -33,3 +33,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+#opensea
+/opensea/node_modules
