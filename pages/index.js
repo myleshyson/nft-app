@@ -60,6 +60,10 @@ const options = [
     value: "boredapeyachtclub",
     label: "Bored Ape Yacht Club",
   },
+  {
+    value: "cosmic-wyverns-official",
+    label: "Cosmic Wyverns Official",
+  }
 ]
 
 /**
@@ -76,14 +80,24 @@ const Loading = () => {
   return <div className={styles.loading}>Loading</div>
 }
 
+const NotFound = () => {
+  return <div>Not Found</div>
+}
+
 const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
   const [loading, setLoading] = useState(false)
+  const [notfound, setNotFound] = useState(false)
   const handleSubmit = async e => {
     e.preventDefault()
+    setNotFound(false)
     setLoading(true)
-    await onSubmit(e)
+    await onSubmit(e).then( result => {
+      afterSubmit(e)
+    }, function(error) {
+      setNotFound(true)
+    })
     setLoading(false)
-    afterSubmit(e)
+    
   }  
   return (
     <form onSubmit={handleSubmit} className={className}>
@@ -100,6 +114,7 @@ const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
         <button className="border-2 p-2 border-black">Search</button>
       </div>
       {loading && <Loading />} 
+      {notfound && <NotFound />} 
     </form>
   )
 }
@@ -133,17 +148,23 @@ export default function Home() {
     setProgress({ ...progress, level2: true })
   }
 
-  /**
-   * @todo use fetch to use either bfs or dfs search for this nft 
-   */
   const findNFT = async e => {
-    // const formData = new FormData(e.target)
-    // let response = await fetch(`/api/something?nftid=${formData.get('nft-id')}`)
-    // response = await response.json()
+    const formData = new FormData(e.target)
+    let searchid  = formData.get('nft-id');
+    let response = await fetch(`/api/bfs/${collection}/${searchid}`)
+    if (!response.ok) {
+      return new Promise((resolve, reject) => {
+        //setTimeout(() => {
+          reject('Not Found')
+       // }, 600)
+      })
+    }
+    response = await response.json()
+    console.log(response);   
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('foo')
-      }, 600)
+      //setTimeout(() => {
+        resolve('resolved')
+     // }, 600)
     })
   }
 
