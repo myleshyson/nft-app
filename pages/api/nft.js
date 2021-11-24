@@ -9,7 +9,7 @@ handler.use(middleware)
 handler.get(async (req, res) => {
   let client = req.db
   let doc = await client.collection('nfts').findOne()
-  res.status(200).json(doc)
+  res.status(200).json({doc})
 })
 
 export default handler

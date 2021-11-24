@@ -1,16 +1,111 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Streamster';
+  src: url('../public/Streamster.ttf') format('ttf'),
+  url('../public/Streamster.eot') format('eot'),
+  url('../public/Streamster.woff') format('woff'),
+  url('../public/Streamster.woff2') format('woff2');
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.streamster {
+  font-family: 'Streamster';
 }
 
-* {
-  box-sizing: border-box;
+h1 {
+  font-family: 'Streamster';
+}
+
+#_next {
+  max-width: 1900px;
+}
+.background {
+  min-height: 100%;
+  min-width: 100%;
+  z-index: -1;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 0, 29, 0.9) 0%,
+    rgba(10, 10, 45, 0.9) 65.1%,
+    rgba(15, 16, 55, 0.9) 99.99%,
+    rgba(56, 29, 132, 0.9) 100%
+  );
+}
+
+.stars {
+  background: url("../public/stars.png") repeat top center;
+  background-size: contain;
+  position: absolute;
+  min-height: 100vh;
+  min-width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.scene {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-top: 4rem;
+}
+
+.glow {
+  position: absolute;
+  left: 0%;
+  background: rgba(255, 48, 181, 0.64);
+  filter: blur(21px);
+  z-index: 1;
+  height: 80px;
+  top: 106px;
+  width: 100%;
+}
+
+.sun {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: -30px;
+}
+
+.david {
+  position: absolute;
+  top: -259px;
+  right: 0;
+  /* width: 30%; */
+  width: 241px;
+}
+
+.grid {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.city {
+  position: relative;
+  background: url("../public/Better_City.svg");
+  height: 100px;
+  margin-bottom: -15px;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.car {
+  position: absolute;
+  right: 25px;
+  bottom: 25px;
 }
