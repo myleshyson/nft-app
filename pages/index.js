@@ -134,9 +134,31 @@ export default function Home() {
     level2: false,
     level3: false,
     level4: false,
+    level5: false
   })
   const [collection, setCollection] = useState(null)
   const [nfts, setNfts] = useState([])
+
+  const NFTCompare = () => {
+    return (
+      <Fragment>
+      <div class="versus">
+      <figure>
+      <img class="border-2 border-black" src={nfts[0].data.image_url}></img>
+      <figcaption>{nfts[0].id}</figcaption>
+      </figure>
+      <img src="/vs.png"></img>
+      <figure>
+      <img class="border-2 border-black" src={nfts[1].data.image_url}></img>
+      <figcaption>{nfts[1].id}</figcaption>
+      </figure>
+      </div>
+      <div class="versus">
+      <button className="border-2 p-2 border-black">Go</button>
+      </div>
+      </Fragment>
+    )
+  }
 
   /**
    * On form submit, get the collection name
@@ -160,7 +182,7 @@ export default function Home() {
       })
     }
     response = await response.json()
-    console.log(response);   
+    setNfts(nfts => [...nfts, response]); 
     return new Promise((resolve, reject) => {
       //setTimeout(() => {
         resolve('resolved')
@@ -269,6 +291,16 @@ export default function Home() {
                 opacity: progress.level4 ? '0.3' : '1'
               }}>
                 <NFTForm className="mt-4" label="NFT Two" onSubmit={findNFT} afterSubmit={() => afterFindNFT(4)} />
+              </div>
+            )}
+            {progress.level4 && (
+              <div style={{
+                opacity: progress.level5 ? '0.3' : '1'
+              }}>   
+              <p className="my-4">
+                Great Choices! Click go when you are ready to compare them.
+                </p>
+                <NFTCompare className="mt-4"/>
               </div>
             )}
             <AlwaysScrollToBottom />
