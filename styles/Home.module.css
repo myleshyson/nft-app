@@ -190,6 +190,23 @@
   max-height: 430px;
 }
 
+div.playerBox::-webkit-scrollbar-track
+{
+  border: 1px solid black;
+  background-color: #F5F5F5;
+}
+
+div.playerBox::-webkit-scrollbar
+{
+  width: 15px;
+  background-color: #F5F5F5;
+}
+
+div.playerBox::-webkit-scrollbar-thumb
+{
+  background-color: #000000;  
+}
+
 .bigCity {
   background: url("../public/Better_City.svg");
   background-repeat: no-repeat;
