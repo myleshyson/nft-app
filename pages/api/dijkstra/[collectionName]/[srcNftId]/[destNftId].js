@@ -8,12 +8,29 @@ handler.use(middleware);
 handler.get(async (req, res) => {
   let client = req.db;
   const { collectionName, srcNftId, destNftId } = req.query;
-
+  // Query graph from MongoDB
   let graph = await client
     .collection(collectionName)
-    .find({}, { projection: { _id: 0, id: 1, "data.connections": 1 } })
+    .find(
+      {},
+      {
+        projection: {
+          _id: 0,
+          id: 1,
+          "data.connections": 1,
+          "data.image_url": 1,
+        },
+      }
+    )
     .toArray();
+  // Perform Dijkstra's
   let result = dijkstra(graph, srcNftId, destNftId);
+  // Get Image Url's
+  result["shortestPath"].map((id) => {
+    result["image_urls"].push(
+      graph.filter((obj) => obj.id == id)[0].data.image_url
+    );
+  });
   res.status(200).json(result);
 });
 
@@ -55,14 +72,14 @@ const dijkstra = (graph, srcNftId, destNftId) => {
     current = previous[current];
   }
   path.push(srcNftId);
-  return { shortestPath: path, distance: distance[destNftId] };
+  return { shortestPath: path, distance: distance[destNftId], image_urls: [] };
 };
 
 class PriorityQueue {
   // Custom Implementation of Priority Queue
   // Underlying implementation uses a min heap
   constructor(comp = (w1, w2) => w1 < w2) {
-    this.data = Array();
+    this.data = [];
     this.comp = comp;
   }
 
