@@ -14,7 +14,7 @@ handler.get(async (req, res) => {
     .find({}, { projection: { _id: 0, id: 1, "data.connections": 1 } })
     .toArray();
 
-  if (dfs(graph, nftId)) {
+  if (bfs(graph, nftId)) {
     let doc = await client
       .collection(collectionName)
       .findOne(
@@ -27,7 +27,7 @@ handler.get(async (req, res) => {
   }
 });
 
-const dfs = (graph, searchId) => {
+const bfs = (graph, searchId) => {
   // Construct Adjacency List from Graph
   let adjList = {};
   graph.map((node) => {
@@ -36,7 +36,7 @@ const dfs = (graph, searchId) => {
   // Initialize variables
   let seen = new Set();
   let next = [];
-  // Perform DFS
+  // Perform BFS
   for (let i = 0; i < graph.length; i++) {
     if (!seen.has(graph[i].id)) {
       seen.add(graph[i].id);
@@ -45,7 +45,7 @@ const dfs = (graph, searchId) => {
       continue;
     }
     while (next.length != 0) {
-      let nodeId = next.pop();
+      let nodeId = next.shift();
       if (nodeId == searchId) {
         return true;
       }
