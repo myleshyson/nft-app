@@ -63,8 +63,20 @@ const options = [
   {
     value: "cosmic-wyverns-official",
     label: "Cosmic Wyverns Official",
-  }
-]
+  },
+  {
+    value: "cryptopunks",
+    label: "CryptoPunks",
+  },
+  {
+    value: "mutantcats",
+    label: "Mutant Cats",
+  },
+  {
+    value: "cryptoongoonz",
+    label: "Cryptoon Goonz",
+  },
+];
 
 /**
  * Helper component to always make the parent scrollable container scroll to the bottom
