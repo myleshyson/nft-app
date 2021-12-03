@@ -291,9 +291,9 @@ const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
               transition={{ duration: 1 }}
             >
               <button className={styles.start} onClick={start}>
-                <span ariaHidden="true">START</span>
+                <span aria-hidden="true">START</span>
                 START
-                <span ariaHidden="true">START</span>
+                <span aria-hidden="true">START</span>
               </button>
             </motion.div>
           )}
