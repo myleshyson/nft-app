@@ -150,26 +150,82 @@ export default function Home() {
   })
   const [collection, setCollection] = useState(null)
   const [nfts, setNfts] = useState([])
+  const [winner, setWinner] = useState(0)
 
-  const NFTCompare = () => {
-    return (
-      <Fragment>
-      <div class="versus">
+
+const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
+  const [loading, setLoading] = useState(false)
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setLoading(true)
+    await onSubmit(e).then( result => {
+      afterSubmit(e)
+    })
+    setLoading(false)
+    
+  }  
+  return (
+    <form onSubmit={handleSubmit} className={className}>
+      <div className="versus">
       <figure>
-      <img class="border-2 border-black" src={nfts[0].data.image_url}></img>
+      <img className="border-2 border-black" src={nfts[0].data.image_url}></img>
       <figcaption>{nfts[0].id}</figcaption>
       </figure>
       <img src="/vs.png"></img>
       <figure>
-      <img class="border-2 border-black" src={nfts[1].data.image_url}></img>
+      <img className="border-2 border-black" src={nfts[1].data.image_url}></img>
       <figcaption>{nfts[1].id}</figcaption>
       </figure>
       </div>
-      <div class="versus">
+      <div className="versus">
       <button className="border-2 p-2 border-black">Go</button>
       </div>
-      </Fragment>
-    )
+      {loading && <Loading />} 
+    </form>
+  )
+}
+  const NFTWinner = () => {
+    if(winner == -1){
+      return (
+        <div className="versus">
+        There was a tie...
+        </div>
+      )
+    } else {
+      return (
+        <div className="versus">
+        <figure>
+        <img className="border-2 border-black" src={nfts[winner].data.image_url}></img>
+        <figcaption>{nfts[winner].id}<br/>Wins!</figcaption>
+        </figure>
+        </div>
+      )
+    }
+  }
+
+  const compareNFTs = async e => {
+    let responseab = await fetch(`/api/dijkstra/${collection}/${nfts[0].id}/${nfts[1].id}`)
+    let responseba = await fetch(`/api/dijkstra/${collection}/${nfts[1].id}/${nfts[0].id}`)
+    if (!responseab.ok || !responseba.ok) {
+      return new Promise((resolve, reject) => {
+        //setTimeout(() => {
+          reject('Not Found')
+       // }, 600)
+      })
+    }
+    responseab = await responseab.json()
+    responseba = await responseba.json()
+    if(responseab.distance > responseba.distance)
+      setWinner(0)
+    else if(responseab.distance < responseba.distance)
+      setWinner(1)
+    else
+      setWinner(-1)
+    return new Promise((resolve, reject) => {
+      //setTimeout(() => {
+        resolve('resolved')
+     // }, 600)
+    })
   }
 
   /**
@@ -312,7 +368,17 @@ export default function Home() {
               <p className="my-4">
                 Great Choices! Click go when you are ready to compare them.
                 </p>
-                <NFTCompare className="mt-4"/>
+                <NFTCompare className="mt-4" onSubmit={compareNFTs} afterSubmit={() => afterFindNFT(5)} />
+              </div>
+            )}
+            {progress.level5 && (
+              <div style={{
+                //opacity: progress.level5 ? '0.3' : '1'
+              }}>   
+              <p className="my-4">
+                Here are the results.
+                </p>
+                <NFTWinner className="mt-4"/>
               </div>
             )}
             <AlwaysScrollToBottom />
