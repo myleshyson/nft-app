@@ -11,9 +11,12 @@ function MyApp({ Component, pageProps }) {
       </div>
       <Head>
         <title>【ＮＦＴ　Ｃｉｔｙ】</title>
-        <meta name="description" content="Welcome to NFT City! Looks like you came here to compare some
+        <meta
+          name="description"
+          content="Welcome to NFT City! Looks like you came here to compare some
                 NFT options. Fill out some information below so we can help you
-                pick the best NFT possible." />
+                pick the best NFT possible."
+        />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />

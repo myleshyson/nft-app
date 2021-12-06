@@ -1,20 +1,18 @@
-import nextConnect from "next-connect";
-import middleware from "../../../../middleware/database";
+import nextConnect from "next-connect"
+import middleware from "../../../../middleware/database"
+import { Queue } from "@datastructures-js/queue"
 
-const handler = nextConnect();
+const handler = nextConnect()
 
-handler.use(middleware);
+handler.use(middleware)
 
 handler.get(async (req, res) => {
-  let client = req.db;
-  const { collectionName, nftId } = req.query;
-
-  let graph = await client
-    .collection(collectionName)
-    .find({}, { projection: { _id: 0, id: 1, "data.connections": 1 } })
-    .toArray();
-
-  if (bfs(graph, nftId)) {
+  let client = req.db
+  const { collectionName, nftId } = req.query
+  let exists = await bfs(client.collection(collectionName), nftId)
+  
+  if (exists) {
+    console.log(nftId)
     let doc = await client
       .collection(collectionName)
       .findOne(
@@ -25,41 +23,66 @@ handler.get(async (req, res) => {
   } else {
     res.status(400).json({ id: nftId, url: "URL NOT FOUND" });
   }
-});
+})
 
-const bfs = (graph, searchId) => {
-  // Construct Adjacency List from Graph
-  let adjList = {};
-  graph.map((node) => {
-    adjList[node.id] = node.data.connections;
-  });
+/**
+ * Updated to utilize mongo instead of querying all nodes and then building an array.
+ * Should initially be a lot faster. 
+ */
+const bfs = async (client, target) => {
   // Initialize variables
-  let seen = new Set();
-  let next = [];
-  // Perform BFS
-  for (let i = 0; i < graph.length; i++) {
-    if (!seen.has(graph[i].id)) {
-      seen.add(graph[i].id);
-      next.push(graph[i].id);
+  let q = Queue.fromArray([])
+  let seen = new Set()
+  let count = await client.count()
+
+  for (let i = 0; i < count; i++) {
+    // if we're just starting out, just get the first time in mongo.
+    // otherwise, check if there's any more nodes to query that we
+    // haven't visited. if so, do bfs again. otherwise we're done.
+    if (!seen.size) {
+      let first = await client.findOne(
+        {},
+        {
+          projection: { id: 1 },
+        }
+      )
+      q.enqueue(first.id)
+      seen.add(first.id)
     } else {
-      continue;
+      let another = await client.findOne(
+        { id: { $nin: seen.toArray() } },
+        { projection: { id: 1 } }
+      )
+      if (another) {
+        q.enqueue(another.id)
+        seen.add(another.id)
+      }
     }
-    while (next.length != 0) {
-      let nodeId = next.shift();
-      if (nodeId == searchId) {
-        return true;
+
+    // Perform BFS
+    while (q.size() != 0) {
+      let nodeId = q.front()
+      q.dequeue()
+
+      if (nodeId == target) {
+        return true
       }
-      if (adjList[nodeId]) {
-        adjList[nodeId].forEach((connection) => {
-          if (!seen.has(connection.id)) {
-            seen.add(connection.id);
-            next.push(connection.id);
-          }
-        });
-      }
+
+      // get query the current node with it's connections
+      let node = await client.findOne(
+        { id: nodeId },
+        { projection: { id: 1, "data.connections.id": 1 } }
+      )
+      
+      node.data.connections.forEach((connection) => {
+        if (!seen.has(connection.id)) {
+          seen.add(connection.id)
+          q.enqueue(connection.id)
+        }
+      })
     }
   }
-  return false;
-};
+  return false
+}
 
-export default handler;
+export default handler

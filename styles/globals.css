@@ -3,19 +3,35 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Streamster';
-  src: url('../public/Streamster.ttf') format('ttf'),
-  url('../public/Streamster.eot') format('eot'),
-  url('../public/Streamster.woff') format('woff'),
-  url('../public/Streamster.woff2') format('woff2');
+  font-family: "Streamster";
+  src: url("../public/Streamster.ttf") format("ttf"),
+    url("../public/Streamster.eot") format("eot"),
+    url("../public/Streamster.woff") format("woff"),
+    url("../public/Streamster.woff2") format("woff2");
 }
 
+body {
+  overflow: hidden;
+}
+
+.playerFont {
+  font-family: 'Press Start 2p';
+}
+
+.tapeWrapper {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  margin: 2rem;
+  transform: scale(0.5);
+  transform-origin: left bottom;
+}
 .streamster {
-  font-family: 'Streamster';
+  font-family: "Streamster";
 }
 
 h1 {
-  font-family: 'Streamster';
+  font-family: "Streamster";
 }
 
 #_next {

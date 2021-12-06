@@ -1,6 +1,6 @@
 import nextConnect from "next-connect";
 import middleware from "../../../../../middleware/database";
-
+import { MinPriorityQueue } from "@datastructures-js/priority-queue";
 const handler = nextConnect();
 
 handler.use(middleware);
@@ -8,65 +8,64 @@ handler.use(middleware);
 handler.get(async (req, res) => {
   let client = req.db;
   const { collectionName, srcNftId, destNftId } = req.query;
-  // Query graph from MongoDB
-  let graph = await client
+
+  // query items in collection so we can initilaze d[v] and p[v]
+  let items = await client
     .collection(collectionName)
-    .find(
-      {},
-      {
-        projection: {
-          _id: 0,
-          id: 1,
-          "data.connections": 1,
-          "data.image_url": 1,
-        },
-      }
-    )
-    .toArray();
-  // Perform Dijkstra's
-  let result = dijkstra(graph, srcNftId, destNftId);
-  // Get Image Url's
+    .find({}, { projection: { id: 1, 'data.image_url': 1} })
+    .toArray()
+    
+  let result = await dijkstra(client.collection(collectionName), items, srcNftId, destNftId);
   result["shortestPath"].map((id) => {
     result["image_urls"].push(
       graph.filter((obj) => obj.id == id)[0].data.image_url
     );
   });
-  res.status(200).json(result);
 });
 
-const dijkstra = (graph, srcNftId, destNftId) => {
-  // Construct Adjacency List from Graph
-  let adjList = {};
-  graph.map((node) => {
-    adjList[node.id] = node.data.connections;
-  });
+const dijkstra = async (client, items, srcNftId, destNftId) => {
   // Initialize variables
-  let pq = new PriorityQueue();
+  let pq = new MinPriorityQueue({ priority: (node) => node.weight });
+  // let pq = new PriorityQueue();
   let distance = {};
   let previous = {};
-  for (const [key, value] of Object.entries(adjList)) {
-    previous[key] = -1;
-    distance[key] = Number.MAX_SAFE_INTEGER;
-    pq.push({ vertex: key, weight: value.weight });
-  }
-  pq.push({ vertex: srcNftId, weight: 0 });
+
+  items.forEach(item => {
+    previous[item.id] = -1;
+    distance[item.id] = Number.MAX_SAFE_INTEGER;
+  })
+
+  pq.enqueue({ vertex: srcNftId, weight: 0 });
   distance[srcNftId] = 0;
   // Dijkstra's Algorithm
-  while (!pq.empty()) {
-    let u = pq.pop().vertex;
-    for (let i = 0; i < adjList[u].length; i++) {
-      let v = adjList[u][i].id;
-      let w = adjList[u][i].weight;
+  while (!pq.isEmpty()) {
+    let u = pq.dequeue().element.vertex;
+    
+    // we reached the node, no need to continue with the algorithm
+    if (u == destNftId) {
+      break;
+    }
+
+    let node = await client.findOne(
+      {id: u},
+      {projection: { 'data.connections': 1} }
+    )
+    
+    node.data.connections.forEach(item => {
+      let v = item.id;
+      let w = item.weight;
       if (distance[u] + w < distance[v]) {
         distance[v] = distance[u] + w;
         previous[v] = u;
-        pq.push({ vertex: v, weight: distance[v] });
+        pq.enqueue({ vertex: v, weight: distance[v] });
       }
-    }
+    })
   }
+
   // Return shortest path
   let current = destNftId;
   let path = [destNftId];
+
   while (previous[current] != srcNftId) {
     path.push(previous[current]);
     current = previous[current];

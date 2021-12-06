@@ -3,6 +3,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import styles from "../styles/Home.module.css"
 import { Fragment, useState, useRef, useEffect } from "react"
+import { useRouter } from "next/dist/client/router"
 
 /**
  * Animation variants for title and start button
@@ -76,7 +77,7 @@ const options = [
     value: "cryptoongoonz",
     label: "Cryptoon Goonz",
   },
-];
+]
 
 /**
  * Helper component to always make the parent scrollable container scroll to the bottom
@@ -99,18 +100,20 @@ const NotFound = () => {
 const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
   const [loading, setLoading] = useState(false)
   const [notfound, setNotFound] = useState(false)
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setNotFound(false)
     setLoading(true)
-    await onSubmit(e).then( result => {
-      afterSubmit(e)
-    }, function(error) {
-      setNotFound(true)
-    })
+    await onSubmit(e).then(
+      (result) => {
+        afterSubmit(e)
+      },
+      function (error) {
+        setNotFound(true)
+      }
+    )
     setLoading(false)
-    
-  }  
+  }
   return (
     <form onSubmit={handleSubmit} className={className}>
       <label htmlFor="nft-id" className="m">
@@ -125,8 +128,8 @@ const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
         />
         <button className="border-2 p-2 border-black">Search</button>
       </div>
-      {loading && <Loading />} 
-      {notfound && <NotFound />} 
+      {loading && <Loading />}
+      {notfound && <NotFound />}
     </form>
   )
 }
@@ -146,85 +149,93 @@ export default function Home() {
     level2: false,
     level3: false,
     level4: false,
-    level5: false
+    level5: false,
   })
   const [collection, setCollection] = useState(null)
   const [nfts, setNfts] = useState([])
   const [winner, setWinner] = useState(0)
 
-
-const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
-  const [loading, setLoading] = useState(false)
-  const handleSubmit = async e => {
-    e.preventDefault()
-    setLoading(true)
-    await onSubmit(e).then( result => {
-      afterSubmit(e)
-    })
-    setLoading(false)
-    
-  }  
-  return (
-    <form onSubmit={handleSubmit} className={className}>
-      <div className="versus">
-      <figure>
-      <img className="border-2 border-black" src={nfts[0].data.image_url}></img>
-      <figcaption>{nfts[0].id}</figcaption>
-      </figure>
-      <img src="/vs.png"></img>
-      <figure>
-      <img className="border-2 border-black" src={nfts[1].data.image_url}></img>
-      <figcaption>{nfts[1].id}</figcaption>
-      </figure>
-      </div>
-      <div className="versus">
-      <button className="border-2 p-2 border-black">Go</button>
-      </div>
-      {loading && <Loading />} 
-    </form>
-  )
-}
-  const NFTWinner = () => {
-    if(winner == -1){
-      return (
+  const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
+    const [loading, setLoading] = useState(false)
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      setLoading(true)
+      await onSubmit(e).then((result) => {
+        afterSubmit(e)
+      })
+      setLoading(false)
+    }
+    return (
+      <form onSubmit={handleSubmit} className={className}>
         <div className="versus">
-        There was a tie...
+          <figure>
+            <img
+              className="border-2 border-black"
+              src={nfts[0].data.image_url}
+            ></img>
+            <figcaption>{nfts[0].id}</figcaption>
+          </figure>
+          <img src="/vs.png"></img>
+          <figure>
+            <img
+              className="border-2 border-black"
+              src={nfts[1].data.image_url}
+            ></img>
+            <figcaption>{nfts[1].id}</figcaption>
+          </figure>
         </div>
-      )
+        <div className="versus">
+          <button className="border-2 p-2 border-black">Go</button>
+        </div>
+        {loading && <Loading />}
+      </form>
+    )
+  }
+  const NFTWinner = () => {
+    if (winner == -1) {
+      return <div className="versus">There was a tie...</div>
     } else {
       return (
         <div className="versus">
-        <figure>
-        <img className="border-2 border-black" src={nfts[winner].data.image_url}></img>
-        <figcaption>{nfts[winner].id}<br/>Wins!</figcaption>
-        </figure>
+          <figure>
+            <img
+              className="border-2 border-black"
+              src={nfts[winner].data.image_url}
+            ></img>
+            <figcaption>
+              {nfts[winner].id}
+              <br />
+              Wins!
+            </figcaption>
+          </figure>
         </div>
       )
     }
   }
 
-  const compareNFTs = async e => {
-    let responseab = await fetch(`/api/dijkstra/${collection}/${nfts[0].id}/${nfts[1].id}`)
-    let responseba = await fetch(`/api/dijkstra/${collection}/${nfts[1].id}/${nfts[0].id}`)
+  const compareNFTs = async (e) => {
+    let responseab = await fetch(
+      `/api/dijkstra/${collection}/${nfts[0].id}/${nfts[1].id}`
+    )
+    let responseba = await fetch(
+      `/api/dijkstra/${collection}/${nfts[1].id}/${nfts[0].id}`
+    )
     if (!responseab.ok || !responseba.ok) {
       return new Promise((resolve, reject) => {
         //setTimeout(() => {
-          reject('Not Found')
-       // }, 600)
+        reject("Not Found")
+        // }, 600)
       })
     }
     responseab = await responseab.json()
     responseba = await responseba.json()
-    if(responseab.distance > responseba.distance)
-      setWinner(0)
-    else if(responseab.distance < responseba.distance)
-      setWinner(1)
-    else
-      setWinner(-1)
+    if (responseab.distance > responseba.distance) setWinner(0)
+    else if (responseab.distance < responseba.distance) setWinner(1)
+    else setWinner(-1)
     return new Promise((resolve, reject) => {
       //setTimeout(() => {
-        resolve('resolved')
-     // }, 600)
+      resolve("resolved")
+      // }, 600)
     })
   }
 
@@ -238,34 +249,46 @@ const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
     setProgress({ ...progress, level2: true })
   }
 
-  const findNFT = async e => {
+  const findNFT = async (e) => {
     const formData = new FormData(e.target)
-    let searchid  = formData.get('nft-id');
+    let searchid = formData.get("nft-id")
     let response = await fetch(`/api/bfs/${collection}/${searchid}`)
     if (!response.ok) {
       return new Promise((resolve, reject) => {
         //setTimeout(() => {
-          reject('Not Found')
-       // }, 600)
+        reject("Not Found")
+        // }, 600)
       })
     }
     response = await response.json()
-    setNfts(nfts => [...nfts, response]); 
+    setNfts((nfts) => [...nfts, response])
     return new Promise((resolve, reject) => {
       //setTimeout(() => {
-        resolve('resolved')
-     // }, 600)
+      resolve("resolved")
+      // }, 600)
     })
   }
 
   const afterFindNFT = async (level) => {
-    return setProgress({...progress, [`level${level}`]: true})
+    return setProgress({ ...progress, [`level${level}`]: true })
   }
   const start = () => setIsStarted(true)
 
   return (
     <Fragment>
-      <div className={styles.content}>
+      <motion.div
+        className={styles.content}
+        initial={{
+          y: -1000,
+        }}
+        animate={{
+          y: 0,
+        }}
+        transition={{
+          type: "spring",
+          duration: 1,
+        }}
+      >
         <main className={styles.main}>
           {!progress.level1 && (
             <motion.div
@@ -332,7 +355,7 @@ const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
                   }}
                 >
                   {options.map((o) => (
-                    <option className="m-0" value={o.value}>
+                    <option key={o.label} className="m-0" value={o.value}>
                       {o.label}
                     </option>
                   ))}
@@ -340,52 +363,84 @@ const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
               </label>
             </div>
             {progress.level2 && (
-              <div style={{
-                opacity: progress.level3 ? '0.3' : '1'
-              }}>
+              <div
+                style={{
+                  opacity: progress.level3 ? "0.3" : "1",
+                }}
+              >
                 <p className="my-4">
                   Awesome! You picked{" "}
                   <span className="bg-green-100 p-1">
                     {options.find((o) => o.value == collection).label}
                   </span>
-                  . Now pick two NFT's from that collection to compare to each
-                  other.
+                  . Now pick two NFT&apos;s from that collection to compare to
+                  each other.
                 </p>
-                <NFTForm label="NFT One" onSubmit={findNFT} afterSubmit={() => afterFindNFT(3)} />
+                <NFTForm
+                  label="NFT One"
+                  onSubmit={findNFT}
+                  afterSubmit={() => afterFindNFT(3)}
+                />
               </div>
             )}
             {progress.level3 && (
-              <div style={{
-                opacity: progress.level4 ? '0.3' : '1'
-              }}>
-                <NFTForm className="mt-4" label="NFT Two" onSubmit={findNFT} afterSubmit={() => afterFindNFT(4)} />
+              <div
+                style={{
+                  opacity: progress.level4 ? "0.3" : "1",
+                }}
+              >
+                <NFTForm
+                  className="mt-4"
+                  label="NFT Two"
+                  onSubmit={findNFT}
+                  afterSubmit={() => afterFindNFT(4)}
+                />
               </div>
             )}
             {progress.level4 && (
-              <div style={{
-                opacity: progress.level5 ? '0.3' : '1'
-              }}>   
-              <p className="my-4">
-                Great Choices! Click go when you are ready to compare them.
+              <div
+                style={{
+                  opacity: progress.level5 ? "0.3" : "1",
+                }}
+              >
+                <p className="my-4">
+                  Great Choices! Click go when you are ready to compare them.
                 </p>
-                <NFTCompare className="mt-4" onSubmit={compareNFTs} afterSubmit={() => afterFindNFT(5)} />
+                <NFTCompare
+                  className="mt-4"
+                  onSubmit={compareNFTs}
+                  afterSubmit={() => afterFindNFT(5)}
+                />
               </div>
             )}
             {progress.level5 && (
-              <div style={{
-                //opacity: progress.level5 ? '0.3' : '1'
-              }}>   
-              <p className="my-4">
-                Here are the results.
-                </p>
-                <NFTWinner className="mt-4"/>
+              <div
+                style={
+                  {
+                    //opacity: progress.level5 ? '0.3' : '1'
+                  }
+                }
+              >
+                <p className="my-4">Here are the results.</p>
+                <NFTWinner className="mt-4" />
               </div>
             )}
             <AlwaysScrollToBottom />
           </motion.div>
         </main>
-      </div>
-      <footer className={styles.footer}>
+      </motion.div>
+      <motion.footer
+        className={styles.footer}
+        initial={{
+          y: 1000,
+        }}
+        animate={{
+          y: 0,
+        }}
+        transition={{
+          duration: 1
+        }}
+      >
         <div className="scene">
           <div className={styles.light}>
             <motion.svg
@@ -460,7 +515,7 @@ const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
           <img className="car" src="/car.svg" alt="" />
           <img className="grid" src="/Bottom.svg" alt="" />
         </div>
-      </footer>
+      </motion.footer>
     </Fragment>
   )
 }
