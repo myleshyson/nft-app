@@ -50,7 +50,7 @@ const bfs = async (client, target) => {
       seen.add(first.id)
     } else {
       let another = await client.findOne(
-        { id: { $nin: seen.toArray() } },
+        { id: { $nin: Array.from(seen) } },
         { projection: { id: 1 } }
       )
       if (another) {
