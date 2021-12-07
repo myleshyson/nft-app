@@ -2,9 +2,9 @@
   "name": "nfts",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS=--max_old_space_size=8000 next dev",
-    "build": "NODE_OPTIONS=--max_old_space_size=8000 next build",
-    "start": "NODE_OPTIONS=--max_old_space_size=8000 next start",
+    "dev": "set NODE_OPTIONS=--max_old_space_size=8192 && next dev",
+    "build": "set NODE_OPTIONS=--max_old_space_size=8192 && next build",
+    "start": "set NODE_OPTIONS=--max_old_space_size=8192 && next start",
     "lint": "next lint"
   },
   "dependencies": {
