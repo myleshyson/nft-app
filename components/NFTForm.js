@@ -1,5 +1,6 @@
 import Loading from "./Loading"
 import NotFound from './NotFound'
+import { useState } from "react"
 
 const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
   const [loading, setLoading] = useState(false)

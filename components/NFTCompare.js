@@ -1,6 +1,7 @@
 import Loading from "./Loading"
+import { useState } from "react"
 
-const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
+const NFTCompare = ({ onSubmit, afterSubmit, className, nfts }) => {
     const [loading, setLoading] = useState(false)
     const handleSubmit = async (e) => {
       e.preventDefault()

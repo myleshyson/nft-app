@@ -305,6 +305,7 @@ export default function Home() {
                   className="my-4"
                   onSubmit={compareNFTs}
                   afterSubmit={() => afterFindNFT(5)}
+                  nfts={nfts}
                 />
               </div>
             )}
