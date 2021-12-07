@@ -4,6 +4,10 @@ import { motion } from "framer-motion"
 import styles from "../styles/Home.module.css"
 import { Fragment, useState, useRef, useEffect } from "react"
 import { useRouter } from "next/dist/client/router"
+import NFTForm from "../components/NFTForm"
+import NFTWinner from "../components/NFTWinner"
+import NFTCompare from "../components/NFTCompare"
+import AlwaysScrollToBottom from "../components/AlwaysScrollToBottom"
 
 /**
  * Animation variants for title and start button
@@ -77,62 +81,11 @@ const options = [
     value: "cryptoongoonz",
     label: "Cryptoon Goonz",
   },
+  {
+    value: "defenders-of-dogewood",
+    label: "Defenders of Dodgewood",
+  },
 ]
-
-/**
- * Helper component to always make the parent scrollable container scroll to the bottom
- * on state change.
- */
-const AlwaysScrollToBottom = () => {
-  const elementRef = useRef()
-  useEffect(() => elementRef.current.scrollIntoView())
-  return <div ref={elementRef} />
-}
-
-const Loading = () => {
-  return <div className={styles.loading}>Loading</div>
-}
-
-const NotFound = () => {
-  return <div>Not Found</div>
-}
-
-const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
-  const [loading, setLoading] = useState(false)
-  const [notfound, setNotFound] = useState(false)
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setNotFound(false)
-    setLoading(true)
-    await onSubmit(e).then(
-      (result) => {
-        afterSubmit(e)
-      },
-      function (error) {
-        setNotFound(true)
-      }
-    )
-    setLoading(false)
-  }
-  return (
-    <form onSubmit={handleSubmit} className={className}>
-      <label htmlFor="nft-id" className="m">
-        {label}
-      </label>
-      <div className="flex">
-        <input
-          type="text"
-          name="nft-id"
-          placeholder="NFT ID"
-          className="block border-2 border-black p-3 mr-2"
-        />
-        <button className="border-2 p-2 border-black">Search</button>
-      </div>
-      {loading && <Loading />}
-      {notfound && <NotFound />}
-    </form>
-  )
-}
 
 export default function Home() {
   /**
@@ -154,65 +107,7 @@ export default function Home() {
   const [collection, setCollection] = useState(null)
   const [nfts, setNfts] = useState([])
   const [winner, setWinner] = useState(0)
-
-  const NFTCompare = ({ onSubmit, afterSubmit, className }) => {
-    const [loading, setLoading] = useState(false)
-    const handleSubmit = async (e) => {
-      e.preventDefault()
-      setLoading(true)
-      await onSubmit(e).then((result) => {
-        afterSubmit(e)
-      })
-      setLoading(false)
-    }
-    return (
-      <form onSubmit={handleSubmit} className={className}>
-        <div className="versus">
-          <figure>
-            <img
-              className="border-2 border-black"
-              src={nfts[0].data.image_url}
-            ></img>
-            <figcaption>{nfts[0].id}</figcaption>
-          </figure>
-          <img src="/vs.png"></img>
-          <figure>
-            <img
-              className="border-2 border-black"
-              src={nfts[1].data.image_url}
-            ></img>
-            <figcaption>{nfts[1].id}</figcaption>
-          </figure>
-        </div>
-        <div className="versus">
-          <button className="border-2 p-2 border-black">Go</button>
-        </div>
-        {loading && <Loading />}
-      </form>
-    )
-  }
-  const NFTWinner = () => {
-    if (winner == -1) {
-      return <div className="versus">There was a tie...</div>
-    } else {
-      return (
-        <div className="versus">
-          <figure>
-            <img
-              className="border-2 border-black"
-              src={nfts[winner].data.image_url}
-            ></img>
-            <figcaption>
-              {nfts[winner].id}
-              <br />
-              Wins!
-            </figcaption>
-          </figure>
-        </div>
-      )
-    }
-  }
-
+  
   const compareNFTs = async (e) => {
     let responseab = await fetch(
       `/api/dijkstra/${collection}/${nfts[0].id}/${nfts[1].id}`
@@ -407,7 +302,7 @@ export default function Home() {
                   Great Choices! Click go when you are ready to compare them.
                 </p>
                 <NFTCompare
-                  className="mt-4"
+                  className="my-4"
                   onSubmit={compareNFTs}
                   afterSubmit={() => afterFindNFT(5)}
                 />
@@ -421,15 +316,15 @@ export default function Home() {
                   }
                 }
               >
-                <p className="my-4">Here are the results.</p>
-                <NFTWinner className="mt-4" />
+                <p className="my-4">Well you did it. You found yourself a nice NFT. Stick around awhile to go again. </p>
+                <NFTWinner nfts={nfts} winner={winner} setProgress={setProgress} className="mt-4" />
               </div>
             )}
             <AlwaysScrollToBottom />
           </motion.div>
         </main>
       </motion.div>
-      <motion.footer
+      <footer
         className={styles.footer}
         initial={{
           y: 1000,
@@ -515,7 +410,7 @@ export default function Home() {
           <img className="car" src="/car.svg" alt="" />
           <img className="grid" src="/Bottom.svg" alt="" />
         </div>
-      </motion.footer>
+      </footer>
     </Fragment>
   )
 }

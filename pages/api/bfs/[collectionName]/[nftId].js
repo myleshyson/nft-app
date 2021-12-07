@@ -9,16 +9,16 @@ handler.use(middleware)
 handler.get(async (req, res) => {
   let client = req.db
   const { collectionName, nftId } = req.query
+
   let exists = await bfs(client.collection(collectionName), nftId)
   
   if (exists) {
-    console.log(nftId)
     let doc = await client
       .collection(collectionName)
       .findOne(
         { id: nftId },
         { projection: { _id: 0, id: 1, "data.image_url": 1 } }
-      );
+      ); 
     res.status(200).json(doc);
   } else {
     res.status(400).json({ id: nftId, url: "URL NOT FOUND" });
