@@ -126,16 +126,12 @@ h1 {
   bottom: 25px;
 }
 
-div.versus {
-  -webkit-display: -webkit-box;
-  -webkit-display: -webkit-flex;
-  display: -webkit-box;
-  display: -ms-flexbox;
+/* div.versus {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   margin-top: 16px;
-}
+} */
 
 div.versus > figure > img {
   height: 150px;

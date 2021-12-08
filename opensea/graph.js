@@ -68,7 +68,7 @@ async function uploadToMongo(collection_name, data) {
   } catch (e) {
     console.log(e)
   } finally {
-    console.log("closed")
+    console.log("closed\n")
     await client.close()
   }
 }
@@ -86,10 +86,7 @@ async function addData(client, collection_name, data) {
 }
 
 async function run() {
-  for (const collection of collections.options) {   
-    console.log("ehy")
-    await createGraph(collection)
-  }
+  await createGraph(collections.options[6])
 }
 
 run()

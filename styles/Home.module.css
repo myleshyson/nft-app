@@ -188,7 +188,7 @@
   width: 100%;
   padding: 2rem;
   overflow-y: auto;
-  max-height: 430px;
+  max-height: 500px;
 }
 
 div.playerBox::-webkit-scrollbar-track

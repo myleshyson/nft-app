@@ -14,13 +14,16 @@ handler.get(async (req, res) => {
     .collection(collectionName)
     .find({}, { projection: { id: 1, 'data.image_url': 1} })
     .toArray()
-    
-  let result = await dijkstra(client.collection(collectionName), items, srcNftId, destNftId);
-  result["shortestPath"].map((id) => {
-    result["image_urls"].push(
-      graph.filter((obj) => obj.id == id)[0].data.image_url
-    );
-  });
+   
+
+  let result = await dijkstra(client.collection(collectionName), items, srcNftId, destNftId); 
+  let nodes = await client.collection(collectionName).find({id: {$in: result.shortestPath}}).toArray()
+
+  nodes.forEach(node => {
+    result.image_urls.push(node.data.image_url)
+  })
+  
+  res.status(200).json(result);
 });
 
 const dijkstra = async (client, items, srcNftId, destNftId) => {

@@ -46,9 +46,7 @@ const getData = async ({ collection_name, collection_size }) => {
   and synchrounously add all collection assets to that file.
 */
 async function run() {
-  for (const collection of collections.options) {
-    await getData(collection)
-  }
+  await getData(collections.options[6])
 }
 
 run()
