@@ -29,7 +29,7 @@ const NFTForm = ({ label, onSubmit, afterSubmit, className }) => {
           type="text"
           name="nft-id"
           placeholder="NFT ID"
-          className="block border-2 border-black p-3 mr-2"
+          className="block border-2 border-black p-2 mr-2"
         />
         <button className="border-2 p-2 border-black">Search</button>
       </div>

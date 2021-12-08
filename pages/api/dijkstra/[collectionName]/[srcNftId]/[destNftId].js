@@ -22,7 +22,7 @@ handler.get(async (req, res) => {
   nodes.forEach(node => {
     result.image_urls.push(node.data.image_url)
   })
-
+  
   res.status(200).json(result);
 });
 

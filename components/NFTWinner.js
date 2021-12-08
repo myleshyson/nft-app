@@ -1,4 +1,4 @@
-const NFTWinner = ({winner, setProgress, nfts}) => {
+const NFTWinner = ({winner, setProgress, setWinner, setIsStarted, setCollection, setNfts, nfts, onRestart}) => {
     if (winner == -1) {
       return <div className="text-center">There was a tie...</div>
     } else {
@@ -13,15 +13,7 @@ const NFTWinner = ({winner, setProgress, nfts}) => {
               Wins!
             </figcaption>
           </figure>
-          <button className="block mx-auto my-2 border-2 p-2 border-black" onClick={() => {
-            setProgress({
-              level1: true,
-              level2: false,
-              level3: false,
-              level4: false,
-              level5: false
-            })
-          }}>Go Again?</button>
+          <button className="block mx-auto my-2 border-2 p-2 border-black" onClick={onRestart}>Go Again?</button>
         </div>
       )
     }

@@ -58,7 +58,7 @@ const lightVariant = {
  */
 const options = [
   {
-    value: null,
+    value: "null",
     label: "Please Select an NFT Collection",
   },
   {
@@ -83,7 +83,7 @@ const options = [
   },
   {
     value: "defenders-of-dogewood",
-    label: "Defenders of Dodgewood",
+    label: "Defenders of Dogewood",
   },
 ]
 
@@ -104,7 +104,7 @@ export default function Home() {
     level4: false,
     level5: false,
   })
-  const [collection, setCollection] = useState(null)
+  const [collection, setCollection] = useState("null")
   const [nfts, setNfts] = useState([])
   const [winner, setWinner] = useState(0)
   
@@ -229,7 +229,7 @@ export default function Home() {
                 opacity: progress.level2 ? "0.3" : "1",
               }}
             >
-              <p>
+              <p className="mb-4">
                 Welcome to NFT City! Looks like you came here to compare some
                 NFT options. Fill out some information below so we can help you
                 pick the best NFT possible.
@@ -318,7 +318,27 @@ export default function Home() {
                 }
               >
                 <p className="my-4">Well you did it. You found yourself a nice NFT. Stick around awhile to go again. </p>
-                <NFTWinner nfts={nfts} winner={winner} setProgress={setProgress} className="mt-4" />
+                <NFTWinner 
+                nfts={nfts} 
+                winner={winner} 
+                setProgress={setProgress} 
+                onRestart={() => {
+                  setNfts([])
+                  setCollection("null")
+                  setWinner(0)
+                  setProgress({
+                    level1: true,
+                    level2: false,
+                    level3: false,
+                    level4: false,
+                    level5: false
+                  })
+                }}
+                setWinner={setWinner}
+                setIsStarted={setIsStarted}
+                setNfts={setNfts}
+                className="mt-4"
+              />
               </div>
             )}
             <AlwaysScrollToBottom />

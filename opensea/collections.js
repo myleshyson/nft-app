@@ -20,7 +20,15 @@ const collections = {
       collection_name: "cryptoongoonz",
       collection_size: 6969,
     },
+    {
+      collection_name: "kaiju-kingz",
+      collection_size: 3702,
+    },
+    {
+      collection_name: "defenders-of-dogewood",
+      collection_size: 3062,
+    },
   ],
-};
+}
 
 module.exports = collections;
